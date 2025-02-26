@@ -15,12 +15,16 @@ extension NSImage {
     }
 
     var jpgData: Data? {
-        guard let tiffRepresentation = tiffRepresentation, let bitmapImage = NSBitmapImageRep(data: tiffRepresentation) else {
+        guard
+            let tiffData = tiffRepresentation,
+            let bitmap = NSBitmapImageRep(data: tiffData),
+            let jpgData = bitmap.representation(using: .jpeg, properties: [:])
+    	  else {
             Log.error("Cannot create data from bitmap image")
             return nil
         }
 
-        return bitmapImage.representation(using: .jpeg, properties: [NSBitmapImageRep.PropertyKey.compressionFactor : 1])
+        return jpgData
     }
     
     func copy(size: NSSize) -> NSImage? {
