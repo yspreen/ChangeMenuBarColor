@@ -5,11 +5,12 @@
 //  Created by Igor Kulman on 19.11.2020.
 //
 
+import Cocoa
+import Foundation
+
 #if canImport(Accessibility)
     import Accessibility
 #endif
-import Foundation
-import Cocoa
 
 func getMainDisplayScale() -> CGFloat {
     return NSScreen.main?.backingScaleFactor ?? 1
@@ -124,10 +125,23 @@ func combineImages(baseImage: NSImage, addedImage: NSImage) -> NSImage? {
 }
 
 func createContext(width: CGFloat, height: CGFloat) -> CGContext? {
+    let imageWidth = Int(width)
+    let imageHeight = Int(height)
+
+    // set up CG parameters
+    let bitsPerComponent: Int = 16
+    let bytesPerPixel: Int = 8
+    let bytesPerRow: Int = imageWidth * bytesPerPixel
+
+    // Create a CGBitmapContext for drawing
     return CGContext(
-        data: nil, width: Int(width), height: Int(height), bitsPerComponent: 8, bytesPerRow: 0,
-        space: CGColorSpaceCreateDeviceRGB(),
-        bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue)
+        data: nil,
+        width: imageWidth,
+        height: imageHeight,
+        bitsPerComponent: bitsPerComponent,
+        bytesPerRow: bytesPerRow,
+				space: CGColorSpaceCreateDeviceRGB(),
+				bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
 }
 
 func colorName(_ color: NSColor) -> String {
