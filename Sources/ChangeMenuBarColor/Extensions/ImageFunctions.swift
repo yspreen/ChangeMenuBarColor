@@ -26,7 +26,7 @@ func createGradientImage(startColor: NSColor, endColor: NSColor, width: CGFloat,
 
     context.drawLinearGradient(
         CGGradient(
-            colorsSpace: CGColorSpaceCreateDeviceRGB(),
+            colorsSpace: CGColorSpace(name: CGColorSpace.displayP3)!,
             colors: [startColor.cgColor, endColor.cgColor] as CFArray, locations: [0.0, 1.0])!,
         start: CGPoint(x: 0, y: 0), end: CGPoint(x: width, y: 0), options: [])
 
