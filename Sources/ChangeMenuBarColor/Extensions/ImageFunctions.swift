@@ -134,14 +134,17 @@ func createContext(width: CGFloat, height: CGFloat) -> CGContext? {
     let bytesPerRow: Int = imageWidth * bytesPerPixel
 
     // Create a CGBitmapContext for drawing
-    return CGContext(
+    let context = CGContext(
         data: nil,
         width: imageWidth,
         height: imageHeight,
         bitsPerComponent: bitsPerComponent,
         bytesPerRow: bytesPerRow,
-				space: CGColorSpaceCreateDeviceRGB(),
-				bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        space: CGColorSpace(name: CGColorSpace.displayP3)!,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    )
+    context?.interpolationQuality = .high
+    return context
 }
 
 func colorName(_ color: NSColor) -> String {

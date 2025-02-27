@@ -11,12 +11,12 @@ import Cocoa
 extension NSImage {
     var cgImage: CGImage? {
         var rect = CGRect.init(origin: .zero, size: self.size)
-        return self.cgImage(forProposedRect: &rect, context: nil, hints: nil)
+        return self.cgImage(forProposedRect: &rect, context: nil, hints: [.interpolation: NSImageInterpolation.high.rawValue])
     }
 
     var jpgData: Data? {
         guard
-            let tiffData = tiffRepresentation,
+					let tiffData = tiffRepresentation(using: .none, factor: 1),
             let bitmap = NSBitmapImageRep(data: tiffData),
             let jpgData = bitmap.representation(using: .jpeg, properties: [:])
     	  else {
@@ -32,7 +32,7 @@ extension NSImage {
         let frame = NSMakeRect(0, 0, size.width, size.height)
         
         // Get the best representation for the given size.
-        guard let rep = self.bestRepresentation(for: frame, context: nil, hints: nil) else {
+        guard let rep = self.bestRepresentation(for: frame, context: .init(cgContext: createContext(width: size.width, height: size.height)!, flipped: false), hints: [.interpolation: NSImageInterpolation.high.rawValue]) else {
             return nil
         }
         
@@ -41,6 +41,10 @@ extension NSImage {
         
         // Set the drawing context and make sure to remove the focus before returning.
         img.lockFocus()
+
+			if let context = NSGraphicsContext.current {
+				context.imageInterpolation = .high
+			}
         defer { img.unlockFocus() }
         
         // Draw the new image
@@ -91,7 +95,7 @@ extension NSImage {
         let frame = NSMakeRect(x, y, size.width, size.height)
         
         // Get the best representation of the image for the given cropping frame.
-        guard let rep = resized.bestRepresentation(for: frame, context: nil, hints: nil) else {
+			guard let rep = resized.bestRepresentation(for: frame, context: .init(cgContext: createContext(width: size.width, height: size.height)!, flipped: false), hints: [.interpolation: NSImageInterpolation.high.rawValue]) else {
             return nil
         }
         
@@ -99,14 +103,18 @@ extension NSImage {
         let img = NSImage(size: size)
         
         img.lockFocus()
+
+			if let context = NSGraphicsContext.current {
+				context.imageInterpolation = .high
+			}
         defer { img.unlockFocus() }
         
         if rep.draw(in: NSMakeRect(0, 0, size.width, size.height),
                     from: frame,
-                    operation: NSCompositingOperation.copy,
+										operation: NSCompositingOperation.copy,
                     fraction: 1.0,
                     respectFlipped: false,
-                    hints: [:]) {
+										hints: [.interpolation: NSImageInterpolation.high.rawValue]) {
             // Return the cropped image.
             return img
         }
