@@ -40,7 +40,7 @@ func createGradientImage(startColor: NSColor, endColor: NSColor, width: CGFloat,
 
 func createSolidImage(color: NSColor, width: CGFloat, height: CGFloat) -> NSImage? {
     // Choose notch radius for inverse rounding in the empty space below the bar.
-    let notchRadius: CGFloat = height / 3
+    let notchRadius: CGFloat = 29.333 / 2 * getMainDisplayScale()
     // Place the solid bar in the upper part: its bottom edge is at y = notchRadius.
     let barRect = CGRect(x: 0, y: notchRadius, width: width, height: height)
 
