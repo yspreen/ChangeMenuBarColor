@@ -19,7 +19,7 @@ class Command {
         fatalError("Override for each type")
     }
 
-    func run() {
+    func run() throws {
         Log.info("Starting up\n")
 
         let screens: [NSScreen] = useAllDisplays ? NSScreen.screens : [NSScreen.main].compactMap({ $0 })
@@ -32,7 +32,7 @@ class Command {
         for (index, screen) in screens.enumerated() {
             guard let adjustedWallpaper = createWallpaper(screen: screen), let data = adjustedWallpaper.jpgData else {
                 Log.error("Could not generate new wallpaper screen \(index)")
-                continue
+                throw ExitCode.failure
             }
 
             setWallpaper(screen: screen, wallpaper: data)
