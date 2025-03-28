@@ -73,8 +73,12 @@ class Command {
             let generatedWallpaperFile = workingDirectory.url.appendingPathComponent("wallpaper-screen-adjusted-\(UUID().uuidString).jpg")
             try? FileManager.default.removeItem(at: generatedWallpaperFile)
 
+            try Thread.sleep(forTimeInterval: 0.1)
+
             try wallpaper.write(to: generatedWallpaperFile)
             Log.debug("Created new wallpaper for the main screen in \(generatedWallpaperFile.absoluteString)")
+
+            try Thread.sleep(forTimeInterval: 0.1)
 
             try NSWorkspace.shared.setDesktopImageURL(generatedWallpaperFile, for: screen, options: [:])
             Log.info("Wallpaper set")
